@@ -56,9 +56,7 @@ npm run build
 npm audit --omit=dev
 ```
 
-`npm test` runs behavioural model tests, a production build and rendered-response tests. Coverage includes parallel-form mapping, scoring, rationales, versioned storage, deletion/expiry/reset paths, CSV injection edge cases, item-level export, WebAuthn status handling, source-level accessibility safeguards and deployed response headers.
-
-The final raw command logs are kept in `../evidence/logs/`. Viewport and keyboard evidence is indexed from `../EVIDENCE_INDEX.md`.
+`npm test` runs behavioural model tests, a production build and rendered-response tests. Coverage includes parallel-form mapping, scoring, rationales, versioned storage, deletion/expiry/reset paths, CSV injection edge cases, item-level export, WebAuthn status handling, source-level accessibility safeguards and deployed response headers. Verification output for a course submission should be retained separately from the source repository.
 
 ## Accessibility
 
@@ -67,32 +65,24 @@ The interface uses native buttons, links, fieldsets and radio inputs; explicit m
 ## Project structure
 
 ```text
-authlab-site/
-  app/                    interactive learning experience and styles
-  lib/authlab-model.ts    versioned questions, storage and export model
-  tests/                  behavioural and rendered-response checks
-  worker/index.ts         production Worker and security headers
-  public/                 downloadable artefacts and demonstration media
-deliverables/
-  report/                 report DOCX/PDF
-  workbook/               learner workbook DOCX/PDF
-  facilitator/            facilitator guide DOCX/PDF
-  presentation/           PPTX/PDF and timed speaking script
-  video/                  closed/open-caption MP4, transcript, SRT and VTT
-evaluation/               participant protocol, schemas and analysis script
-evidence/                 screenshots, logs and verification evidence
+app/                    interactive learning experience and styles
+lib/authlab-model.ts    versioned questions, storage and export model
+tests/                  behavioural and rendered-response checks
+worker/index.ts         production Worker and security headers
+public/                 site assets, teaching downloads and demonstration media
+build/                  Sites build integration
 ```
 
 ## Evaluation workflow
 
-1. Give the participant the information/consent sheet in `../evaluation/`.
+1. Give the participant an institutionally approved information and consent sheet.
 2. Ask them to complete the activity without entering identifying information.
 3. If they agree to share a record, have them export JSON or CSV and transfer it by the approved course method.
 4. Store raw records separately from any contact or consent administration.
-5. Run `python3 ../evaluation/analyse_exports.py <export-directory> --output <analysis-directory>`.
-6. Treat any generated statistics as descriptive and verify data quality before reporting them.
+5. Analyse genuine exports using an approved, version-matched analysis process.
+6. Treat generated statistics as descriptive and verify data quality before reporting them.
 
-No genuine participant exports are supplied in this repository. Blank schemas and analysis tooling must not be mistaken for participant evidence.
+No genuine participant exports are supplied in this repository. Developer tests and blank evaluation materials must not be mistaken for participant evidence.
 
 ## Known limitations
 
@@ -104,16 +94,14 @@ No genuine participant exports are supplied in this repository. Blank schemas an
 
 ## Deployment and sharing
 
-The current public site is hosted through OpenAI Sites. Rebuilding and redeploying is documented in `../HOSTING_AND_SHARING.md`.
+The current public site is hosted through OpenAI Sites.
 
-- Source repository: `[ADD GITHUB REPOSITORY URL AFTER THE STUDENT PUBLISHES IT]`
-- OneDrive submission folder: `[ADD ONEDRIVE SHARE URL AFTER THE STUDENT CREATES IT]`
-
-These placeholders are intentional: unavailable external links and student identity details are not fabricated.
+- Source repository: [github.com/tongyu12138/comp6441project](https://github.com/tongyu12138/comp6441project)
+- Public learning site: [AuthLab on Sites](https://authlab-passkeys-guide.valid-bread-2713.chatgpt.site)
 
 ## Academic-integrity handoff
 
-Before submission, the student must replace the name/zID and filename placeholders, write their own personal reflection, verify course-specific consent/ethics expectations, insert any genuine participant results they are authorised to use, and confirm every public/download link. See `../FINAL_SUBMISSION_CHECKLIST.md`.
+Before submission, the student must use their real name/zID in required assessment files, write their own personal reflection, verify course-specific consent and ethics expectations, insert only genuine participant results they are authorised to use, and confirm every public/download link.
 
 ## Generative AI acknowledgement
 
