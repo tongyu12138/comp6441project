@@ -1,98 +1,120 @@
-# vinext-starter
+# AuthLab: Passwords, Phishing and Passkeys
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+AuthLab is a client-side security learning activity for COMP6441. It is **not** an authentication service and does not protect a real account. Its purpose is to help a beginner distinguish identity, authentication and authorisation; reason about password reuse and credential stuffing; inspect phishing evidence; and explain why WebAuthn/passkeys can resist conventional phishing.
 
-## Prerequisites
+Public deployment: [AuthLab on Sites](https://authlab-passkeys-guide.valid-bread-2713.chatgpt.site)
 
-- Node.js `>=22.13.0`
+## Learning design
 
-## Quick Start
+The experience follows a measurable sequence:
+
+1. Form A records a six-item baseline and subjective confidence without revealing a score or answer key.
+2. Four modules teach identity layers, password reuse, phishing evidence and passkey/WebAuthn concepts.
+3. Each module has an explicit completion checkpoint; opening a module does not count as completion.
+4. Form B assesses the same six learning objectives with different scenarios.
+5. Form B then reveals item-by-item explanations, distractor feedback and objective mappings.
+6. The learner may export a de-identified local record for a facilitator or delete it from the device.
+
+The two forms are parallel, not statistically validated equivalent instruments. Score change and subjective-confidence change are descriptive evidence only. No claim of learning effectiveness should be made without genuine participant records and an appropriate evaluation design.
+
+## Learning objectives
+
+- `LO-01`: distinguish identity, authentication and authorisation.
+- `LO-02`: explain credential stuffing caused by password reuse.
+- `LO-03`: use registered-domain, request-context and trusted-route evidence.
+- `LO-04`: separate replay resistance from phishing resistance across MFA methods.
+- `LO-05`: explain WebAuthn relying-party/verifier-name binding.
+- `LO-06`: explain the public/private-key boundary and residual passkey risks.
+
+## Privacy and security boundary
+
+- No account, login, database, analytics service or record-upload endpoint is used.
+- Progress is stored in browser `localStorage` under `authlab-learning-session-v2` and expires after 30 days.
+- The random session code is de-identified, not guaranteed anonymous. Participants must not enter names, zIDs, email addresses or other identifying text.
+- JSON/CSV exports omit exact timestamps and use a rounded duration bucket.
+- CSV cells are escaped and leading spreadsheet-formula characters (`=`, `+`, `-`, `@`) are neutralised.
+- The default passkey activity is conceptual. An optional browser WebAuthn demonstration requires explicit consent, uses a non-discoverable preference, receives no biometric or private key, and performs no server-side challenge persistence or signature verification. It must not be presented as production authentication.
+- Production responses apply CSP, anti-framing, no-referrer, MIME-sniffing and permissions-policy headers in the Worker entry point.
+
+## Local development
+
+Requirements: Node.js `>=22.13.0` and npm.
 
 ```bash
-npm install
+npm ci
 npm run dev
+```
+
+Open the local URL printed by vinext. No environment variables or database setup are required.
+
+## Verification
+
+```bash
+npm run lint
+npm test
 npm run build
+npm audit --omit=dev
 ```
 
-This starter does not use `wrangler.jsonc`.
+`npm test` runs behavioural model tests, a production build and rendered-response tests. Coverage includes parallel-form mapping, scoring, rationales, versioned storage, deletion/expiry/reset paths, CSV injection edge cases, item-level export, WebAuthn status handling, source-level accessibility safeguards and deployed response headers.
 
-## Included Shape
+The final raw command logs are kept in `../evidence/logs/`. Viewport and keyboard evidence is indexed from `../EVIDENCE_INDEX.md`.
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+## Accessibility
 
-## Workspace Auth Headers
+The interface uses native buttons, links, fieldsets and radio inputs; explicit module checkpoints; a skip link; `aria-pressed` decision states; a labelled progressbar; non-colour correctness text; a keyboard-scrollable comparison table; mobile section navigation; visible focus styles; and reduced-motion rules. Final target-viewport and keyboard checks are recorded separately because automated source tests do not replace assistive-technology or user testing.
 
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
+## Project structure
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```text
+authlab-site/
+  app/                    interactive learning experience and styles
+  lib/authlab-model.ts    versioned questions, storage and export model
+  tests/                  behavioural and rendered-response checks
+  worker/index.ts         production Worker and security headers
+  public/                 downloadable artefacts and demonstration media
+deliverables/
+  report/                 report DOCX/PDF
+  workbook/               learner workbook DOCX/PDF
+  facilitator/            facilitator guide DOCX/PDF
+  presentation/           PPTX/PDF and timed speaking script
+  video/                  closed/open-caption MP4, transcript, SRT and VTT
+evaluation/               participant protocol, schemas and analysis script
+evidence/                 screenshots, logs and verification evidence
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+## Evaluation workflow
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+1. Give the participant the information/consent sheet in `../evaluation/`.
+2. Ask them to complete the activity without entering identifying information.
+3. If they agree to share a record, have them export JSON or CSV and transfer it by the approved course method.
+4. Store raw records separately from any contact or consent administration.
+5. Run `python3 ../evaluation/analyse_exports.py <export-directory> --output <analysis-directory>`.
+6. Treat any generated statistics as descriptive and verify data quality before reporting them.
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+No genuine participant exports are supplied in this repository. Blank schemas and analysis tooling must not be mistaken for participant evidence.
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+## Known limitations
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+- Forms A/B target the same objectives but have not been calibrated as psychometrically equivalent.
+- No delayed-retention test, production account system or server-side WebAuthn challenge/signature verification exists.
+- Results can vary by browser/authenticator, and phishing scenarios simplify real organisational context.
+- A device-local record can be inspected by someone with access to that browser profile; users should delete it on shared devices.
+- No genuine participant evaluation record is bundled, so teaching effectiveness is not claimed.
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+## Deployment and sharing
 
-## Useful Commands
+The current public site is hosted through OpenAI Sites. Rebuilding and redeploying is documented in `../HOSTING_AND_SHARING.md`.
 
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+- Source repository: `[ADD GITHUB REPOSITORY URL AFTER THE STUDENT PUBLISHES IT]`
+- OneDrive submission folder: `[ADD ONEDRIVE SHARE URL AFTER THE STUDENT CREATES IT]`
 
-## Learn More
+These placeholders are intentional: unavailable external links and student identity details are not fabricated.
 
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+## Academic-integrity handoff
+
+Before submission, the student must replace the name/zID and filename placeholders, write their own personal reflection, verify course-specific consent/ethics expectations, insert any genuine participant results they are authorised to use, and confirm every public/download link. See `../FINAL_SUBMISSION_CHECKLIST.md`.
+
+## Generative AI acknowledgement
+
+OpenAI Codex assisted with code review, refactoring, test generation, formatting, language editing and quality assurance. Security claims are checked against the primary sources cited in the report. Codex did not generate participant data, work hours or personal reflection. The student must review the final work, ensure it complies with current UNSW/COMP6441 policy, be able to explain it and accept responsibility for the submitted content.

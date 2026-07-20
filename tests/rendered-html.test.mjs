@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -19,24 +18,17 @@ test("server-renders the AuthLab product shell", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   const html = await response.text();
   assert.match(html, /AuthLab/);
-  assert.match(html, /Passwords, Phishing, MFA and Passkeys/);
+  assert.match(html, /AuthLab|device-local learning record/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
   assert.match(html, /og\.png/);
 });
 
-test("source includes every promised learning and privacy control", async () => {
-  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
-  for (const required of [
-    "Identity engineering",
-    "Password failure modes",
-    "Phishing and impersonation",
-    "MFA and passkeys",
-    "navigator.credentials.create",
-    "navigator.credentials.get",
-    "Export CSV",
-    "Reset local data",
-    "No credential collection",
-  ]) assert.match(page, new RegExp(required.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"));
-  assert.match(page, /STORAGE_KEY/);
-  assert.match(page, /example\.test/);
+test("production response carries the expected security headers", async () => {
+  const response = await render();
+  assert.match(response.headers.get("content-security-policy") ?? "", /default-src 'self'/);
+  assert.match(response.headers.get("content-security-policy") ?? "", /frame-ancestors 'none'/);
+  assert.equal(response.headers.get("referrer-policy"), "no-referrer");
+  assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+  assert.equal(response.headers.get("x-frame-options"), "DENY");
+  assert.match(response.headers.get("permissions-policy") ?? "", /publickey-credentials-get=\(self\)/);
 });

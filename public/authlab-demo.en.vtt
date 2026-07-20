@@ -1,22 +1,73 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:08.000
-AuthLab is an interactive guide to passwords, phishing, MFA and passkeys.
+00:00:00.000 --> 00:00:04.500
+AuthLab teaches authentication as a system,
+not password tips.
 
-00:00:08.000 --> 00:00:20.000
-Identity is the claim. Authentication is the proof. Authorisation decides what the identity may do.
+00:00:04.500 --> 00:00:08.500
+First, it separates three decisions.
 
-00:00:20.000 --> 00:00:32.000
-The password lab shows how one leaked and reused credential can unlock unrelated services.
+00:00:08.500 --> 00:00:13.000
+Identity is the account claim.
+Authentication is accepted proof.
 
-00:00:32.000 --> 00:00:45.000
-The phishing activity teaches learners to read the registered domain from right to left.
+00:00:13.000 --> 00:00:17.000
+Authorisation is the permitted action.
 
-00:00:45.000 --> 00:00:59.000
-MFA reduces risk, but OTPs and push approvals can still be relayed or abused.
+00:00:17.000 --> 00:00:22.000
+Next, the password lab uses fictional data
+to show credential stuffing.
 
-00:00:59.000 --> 00:01:12.000
-Passkeys use origin-bound public-key challenge-response; the private key stays in the authenticator.
+00:00:22.000 --> 00:00:27.000
+A leaked password can be replayed
+across unrelated services,
 
-00:01:12.000 --> 00:01:30.000
-Pre/post results stay local and can be exported without collecting credentials or personal data.
+00:00:27.000 --> 00:00:31.000
+so complexity alone does not stop reuse.
+
+00:00:31.000 --> 00:00:37.000
+The phishing module asks learners to inspect
+the registered domain, request context,
+
+00:00:37.000 --> 00:00:41.000
+and a trusted route.
+
+00:00:41.000 --> 00:00:47.000
+A page can copy pixels, and a real-time attacker
+can relay passwords or one-time codes.
+
+00:00:47.000 --> 00:00:53.000
+The MFA comparison separates replay resistance
+from phishing resistance.
+
+00:00:53.000 --> 00:00:57.500
+TOTP is short-lived,
+but it can still be relayed.
+
+00:00:57.500 --> 00:01:03.000
+A WebAuthn passkey signs a fresh challenge
+for the relying party,
+
+00:01:03.000 --> 00:01:09.000
+so a look-alike site cannot obtain a valid assertion
+for the legitimate domain.
+
+00:01:09.000 --> 00:01:14.000
+Finally, Form A and Form B results
+stay in the browser
+
+00:01:14.000 --> 00:01:19.000
+and can be exported
+as a de-identified record.
+
+00:01:19.000 --> 00:01:24.000
+AuthLab asks for no real password,
+MFA code, or biometric.
+
+00:01:24.000 --> 00:01:30.000
+The optional browser demonstration is not a production login;
+no server verifies its assertion.
+
+00:01:30.000 --> 00:01:36.000
+The design rule is simple: demonstrate the protocol
+without creating a new security risk.
