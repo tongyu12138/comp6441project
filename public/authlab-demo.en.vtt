@@ -1,0 +1,22 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:08.000
+AuthLab is an interactive guide to passwords, phishing, MFA and passkeys.
+
+00:00:08.000 --> 00:00:20.000
+Identity is the claim. Authentication is the proof. Authorisation decides what the identity may do.
+
+00:00:20.000 --> 00:00:32.000
+The password lab shows how one leaked and reused credential can unlock unrelated services.
+
+00:00:32.000 --> 00:00:45.000
+The phishing activity teaches learners to read the registered domain from right to left.
+
+00:00:45.000 --> 00:00:59.000
+MFA reduces risk, but OTPs and push approvals can still be relayed or abused.
+
+00:00:59.000 --> 00:01:12.000
+Passkeys use origin-bound public-key challenge-response; the private key stays in the authenticator.
+
+00:01:12.000 --> 00:01:30.000
+Pre/post results stay local and can be exported without collecting credentials or personal data.
