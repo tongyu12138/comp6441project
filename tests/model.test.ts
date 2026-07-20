@@ -87,7 +87,7 @@ test("CSV safe cells handle punctuation, Unicode, formula prefixes, empties and 
   assert.equal(csvSafeCell("a,b"), '"a,b"');
   assert.equal(csvSafeCell('he said "hello"'), '"he said ""hello"""');
   assert.equal(csvSafeCell("line 1\nline 2"), '"line 1\nline 2"');
-  assert.equal(csvSafeCell("密码与密钥"), '"密码与密钥"');
+  assert.equal(csvSafeCell("password 🔐 key"), '"password 🔐 key"');
   assert.equal(csvSafeCell("=SUM(A1:A2)"), '"\'=SUM(A1:A2)"');
   assert.equal(csvSafeCell("   +cmd"), '"\'   +cmd"');
   assert.equal(csvSafeCell("\t-2"), '"\'\t-2"');
